@@ -10,6 +10,7 @@ public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long noteId;
+    private String title;
     private String content;
 
     @ManyToOne
@@ -71,5 +72,12 @@ public class Note {
         }
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }
 

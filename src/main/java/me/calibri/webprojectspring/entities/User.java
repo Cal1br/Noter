@@ -1,5 +1,7 @@
 package me.calibri.webprojectspring.entities;
 
+import me.calibri.webprojectspring.models.UserDto;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -65,5 +67,9 @@ public class User {
 
     public void setUsername(String name) {
         this.username = name;
+    }
+
+    public UserDto toDto(){
+        return new UserDto(this);
     }
 }

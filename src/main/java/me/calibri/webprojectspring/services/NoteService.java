@@ -4,11 +4,13 @@ import me.calibri.webprojectspring.entities.Note;
 import me.calibri.webprojectspring.entities.Pictures;
 import me.calibri.webprojectspring.entities.User;
 import me.calibri.webprojectspring.repositories.NoteRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class NoteService {
     private final NoteRepository noteRepository;
 
@@ -17,9 +19,10 @@ public class NoteService {
         this.noteRepository = noteRepository;
     }
 
-    public Note createNote(User owner, String content, List<Pictures> pictures) {
+    public Note createNote(User owner, String title, String content, List<Pictures> pictures) {
         Note note = new Note();
         note.setOwner(owner);
+        note.setTitle(title);
         note.setContent(content);
         note.setPictures(pictures); //NULL проблемът е решен в set метода
         note.setUsers(new ArrayList<>());
