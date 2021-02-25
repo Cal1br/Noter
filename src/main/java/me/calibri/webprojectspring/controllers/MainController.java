@@ -1,20 +1,23 @@
 package me.calibri.webprojectspring.controllers;
 
+import me.calibri.webprojectspring.entities.Note;
 import me.calibri.webprojectspring.entities.User;
+import me.calibri.webprojectspring.models.NoteEditModel;
+import me.calibri.webprojectspring.models.NoteShareModel;
+import me.calibri.webprojectspring.models.UserDto;
 import me.calibri.webprojectspring.services.NoteService;
 import me.calibri.webprojectspring.services.UserService;
 import me.calibri.webprojectspring.utils.LoginUtility;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
-
+//TODO NoteView and edit
+//TODO View Notes and make them clickable, и от там може да има един бутон edit, който да прави contendeditable true там както беше logout в началото
 @Controller
 @RequestMapping
 public class MainController {
@@ -84,21 +87,60 @@ public class MainController {
     }
 
     @PostMapping("noteCreator")
-    public String postNote(HttpSession session, @RequestParam String title, @RequestParam String content) { //TODO Tuka sushto kartinkite
+    public String postNote(HttpSession session, @RequestParam String title, @RequestParam String content,Model model) { //TODO Tuka sushto kartinkite
         try {
             User owner = userService.getUserById(LoginUtility.getUserDto(session).getId());
             noteService.createNote(owner, title, content, new ArrayList<>()); //TODO Dobavi Kartinkite.....
             return "redirect:/notes";
         } catch (RuntimeException exception) {
-            //TODO SHOW ERROR MESSAGE
+            model.addAttribute("errmessage", exception.getMessage());
         }
         return "NoteCreator";
     }
 
     @GetMapping("/notes")
-    public String getNotes(HttpSession session) {
+    public String getNotes(Model model, HttpSession session) {
         if (!LoginUtility.isLoggedIn(session)) return HOME_PAGE;
+
+        UserDto userDto = LoginUtility.getUserDto(session);
+        User userEntity = userService.getUserById(userDto.getId());
+        model.addAttribute("notes", noteService.findNotesByOwner(userEntity));
+        model.addAttribute("sharednotes",userEntity.getSharedNotes());
         return "Notes";
+    }
+
+    @GetMapping("/noteviewer/{id}")
+    public String viewNoteById(Model model, HttpSession session, @PathVariable long id) {
+        if (!LoginUtility.isLoggedIn(session)) return HOME_PAGE;
+        try {
+            Note note = noteService.getNoteById(id);
+            noteService.checkOwner(note, LoginUtility.getUserDto(session).getId());
+            model.addAttribute("note",note);
+            return "NoteView";
+        } catch (RuntimeException exception) {
+            model.addAttribute("errmessage", exception.getMessage());
+        }
+        return "Notes";
+    }
+
+    @PostMapping("/savenote")
+    public @ResponseBody
+    ResponseEntity<String> saveNote(@RequestBody NoteEditModel model,HttpSession session){
+        if (!LoginUtility.isLoggedIn(session)) return ResponseEntity.badRequest().build();
+        noteService.updateNote(model);
+        return ResponseEntity.status(200).build();
+    }
+    @PostMapping("/sharenote")
+    public @ResponseBody
+    ResponseEntity<String> shareNote(@RequestBody NoteShareModel model, HttpSession session){
+        if (!LoginUtility.isLoggedIn(session)) return ResponseEntity.badRequest().build();
+        try{
+            noteService.shareNote(model);
+        }
+        catch(RuntimeException exception){
+            return ResponseEntity.status(500).body(exception.getMessage());
+        }
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/logout")

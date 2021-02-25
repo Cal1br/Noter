@@ -18,11 +18,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany
-    @JoinTable(
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "note_id")}
-    )
+    @ManyToMany(mappedBy = "users")
     private List<Note> sharedNotes;
 
     public User() {

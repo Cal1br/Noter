@@ -22,8 +22,8 @@
         </a>
             <ul class="navbar-nav mx-auto border-secondary">
                 <li class="nav-item"><a class="nav-link" href="/notes">Notes</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#" contenteditable="true">Logout<br></a></li>
+                <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/logout">Logout<br></a></li>
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="#">
@@ -47,10 +47,10 @@
                     <div class="form-group h-50 w-100">
                         <input type="text"
                                class="form-control border-bottom border-secondary"
-                               placeholder="Enter your TItle here" name="title"
-                               required="required">
+                               placeholder="Enter your Title here" name="title"
+                               required="required" maxlength="50" minlength="1">
                         <textarea name="content" id="content" cols="30" rows="10" class="w-100 h-100"
-                                  placeholder="Write your content here" required="required"></textarea>
+                                  placeholder="Write your content here" required="required" minlength="1" maxlength="2000"></textarea>
                     </div>
                     <button type="submit" class="btn w-75 btn-success m-4">Submit</button>
                 </form>
@@ -67,10 +67,25 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
-<pingendo onclick="window.open('https://pingendo.com/', '_blank')"
-          style="cursor:pointer;position: fixed;bottom: 20px;right:20px;padding:4px;background-color: #00b0eb;border-radius: 8px; width:220px;display:flex;flex-direction:row;align-items:center;justify-content:center;font-size:14px;color:white">
-    Made with Pingendo Free&nbsp;&nbsp;<img src="https://pingendo.com/site-assets/Pingendo_logo_big.png" class="d-block"
-                                            alt="Pingendo logo" height="16"></pingendo>
+
+<!-- beginning of errr message -->
+<div class="py-5" style="width: 50%;position: fixed; top:0px; left:25%; z-index: 9999; border-radius: 0px;" th:if="${errmessage}">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12 m-0 p-0">
+                        <div class="alert alert-danger text-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">×</button>
+                            <h4 class="alert-heading text-center">An Error has occured</h4>
+                            <p class="mb-0 text-center" th:text="${errmessage}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- end of err message -->
 </body>
 
 </html>

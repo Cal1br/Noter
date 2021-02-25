@@ -3,6 +3,8 @@ package me.calibri.webprojectspring.services;
 import me.calibri.webprojectspring.entities.Note;
 import me.calibri.webprojectspring.entities.Pictures;
 import me.calibri.webprojectspring.entities.User;
+import me.calibri.webprojectspring.models.NoteEditModel;
+import me.calibri.webprojectspring.models.NoteShareModel;
 import me.calibri.webprojectspring.repositories.NoteRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +15,11 @@ import java.util.Optional;
 @Service
 public class NoteService {
     private final NoteRepository noteRepository;
+    private final UserService userService;
 
-
-    public NoteService(NoteRepository noteRepository) {
+    public NoteService(NoteRepository noteRepository, UserService userService) {
         this.noteRepository = noteRepository;
+        this.userService = userService;
     }
 
     public Note createNote(User owner, String title, String content, List<Pictures> pictures) {
@@ -28,6 +31,12 @@ public class NoteService {
         note.setUsers(new ArrayList<>());
         return noteRepository.save(note);
     }
+    public void updateNote(NoteEditModel model){
+        Note note = getNoteById(model.getId());
+        note.setTitle(model.getTitle());
+        note.setContent(model.getContent());
+        noteRepository.save(note);
+    }
 
     public void deleteNoteById(long id) {
         noteRepository.deleteById(id);
@@ -37,4 +46,29 @@ public class NoteService {
         Optional<List<Note>> notes = noteRepository.findAllByOwner(owner);
         return notes.orElse(null);
     }
+
+    public boolean checkOwner(Note note,long userId){
+        if(note.getOwner().getUserId() == userId) return true;
+        else{
+            throw new RuntimeException("You do not own access to this note!");
+        }
+    }
+    public Note getNoteById(long id){
+        Optional<Note> optionalNote = noteRepository.findById(id);
+        if(optionalNote.isPresent()){
+            return optionalNote.get();
+        }else {
+            throw new RuntimeException("No such note with this id");
+        }
+    }
+
+    public void shareNote(NoteShareModel model){
+
+        User user = userService.getUserByUsernameOrEmail(model.getUsername());
+        Note note = getNoteById(model.getNoteId());
+        note.getUsers().add(user);
+        noteRepository.save(note);
+    }
+
+
 }

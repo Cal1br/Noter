@@ -60,5 +60,14 @@ public class UserService {
             throw new RuntimeException("No such user with this id");
         }
     }
+    public User getUserByUsernameOrEmail(String username){
+        Optional<User> optionalUser = repository.findByUsernameOrEmail(username,username);
+        if (optionalUser.isPresent()){
+            return optionalUser.get();
+        }
+        else{
+            throw new RuntimeException("No such user with this username or email");
+        }
+    }
 
 }

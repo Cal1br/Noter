@@ -2,46 +2,186 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
-  <link rel="stylesheet" href="theme.css" type="text/css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+          type="text/css">
+
+    <link rel="stylesheet" href="/theme.css" type="text/css">
 </head>
-<!--
-INDIVIDUAL VIEW OF NOTES + PICTURES
--->
+
 <body>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark border-secondary border-bottom py-2">
-    <div class="container"> <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbar13" style="">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbar13"> <a class="navbar-brand d-none d-md-block" href="#">
-          <i class="fa fa-sticky-note" aria-hidden="true"></i>
-          <b>Noter</b>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark border-secondary border-bottom py-2">
+    <div class="container">
+        <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse"
+                data-target="#navbar13" style="">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar13"><a class="navbar-brand d-none d-md-block" href="#">
+            <i class="fa fa-sticky-note" aria-hidden="true"></i>
+            <b>Noter</b>
         </a>
-        <ul class="navbar-nav mx-auto border-secondary">
-          <li class="nav-item"><a class="nav-link" href="/notes">Notes</a></li>>
-          <li class="nav-item"> <a class="nav-link" href="#">Home</a> </li>
-          <li class="nav-item"> <a class="nav-link" href="#">Logout<br></a> </li>
-        </ul>
-        <ul class="navbar-nav">
-          <li class="nav-item"> <a class="nav-link" href="#">
-              <i class="fa fa-twitter fa-fw"></i>
-            </a> </li>
-          <li class="nav-item"> <a class="nav-link" href="#">
-              <i class="fa fa-facebook fa-fw"></i>
-            </a> </li>
-          <li class="nav-item"> <a class="nav-link" href="#">
-              <i class="fa fa-slack fa-fw"></i>
-            </a> </li>
-        </ul>
-      </div>
+            <ul class="navbar-nav mx-auto border-secondary">
+                <li class="nav-item"><a class="nav-link" href="/notes">Notes</a></li>
+                <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/logout">Logout<br></a></li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="#">
+                    <i class="fa fa-twitter fa-fw"></i>
+                </a></li>
+                <li class="nav-item"><a class="nav-link" href="#">
+                    <i class="fa fa-facebook fa-fw"></i>
+                </a></li>
+                <li class="nav-item"><a class="nav-link" href="#">
+                    <i class="fa fa-slack fa-fw"></i>
+                </a></li>
+            </ul>
+        </div>
     </div>
-  </nav>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <pingendo onclick="window.open('https://pingendo.com/', '_blank')" style="cursor:pointer;position: fixed;bottom: 20px;right:20px;padding:4px;background-color: #00b0eb;border-radius: 8px; width:220px;display:flex;flex-direction:row;align-items:center;justify-content:center;font-size:14px;color:white">Made with Pingendo Free&nbsp;&nbsp;<img src="https://pingendo.com/site-assets/Pingendo_logo_big.png" class="d-block" alt="Pingendo logo" height="16"></pingendo>
+</nav>
+<div class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 id="title" class="" th:text="${note.title}">Title of Note</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p id="content" class="lead" th:text="${note.content}">Content of Note</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 d-flex flex-row justify-content-start align-items-start">
+                <button class="btn btn-outline-secondary btn-lg w-50 m-0" id="edit" onclick="edit()">Edit<br></button>
+                <button class="btn btn-lg btn-success w-50 hidden" id="save"
+                        th:note-id="${note.getNoteId()}" onclick="save(this.getAttribute('note-id'))">Save
+                </button>
+            </div>
+            <div class="col-md-6 d-flex flex-row justify-content-end">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-lg" name="username"
+                                   placeholder="Enter username" required="required" id="username">
+                        </div>
+                    </div>
+                    <div class=""><button th:note-id="${note.getNoteId()}" onclick="shareWithFriend(this.getAttribute('note-id'))" class="btn btn-secondary btn-lg" id="share">Share</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script>
+    function edit() {
+        document.getElementById("save").classList.remove("hidden");
+        document.getElementById("edit").classList.add("hidden");
+        document.getElementById("content").setAttribute("contenteditable", true);
+        document.getElementById("title").setAttribute("contenteditable", true);
+    }
+    function shareWithFriend(id){
+        let username = document.getElementById("username").value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/sharenote', true);
+
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function () { // Call a function when the state changes.
+            if (this.readyState === XMLHttpRequest.DONE) {
+                document.getElementById("username").value = "";
+                if (this.status === 500) {
+
+                    console.log(this.response)
+                }
+            }
+        }
+
+        xhr.send(JSON.stringify({username, noteId: id}));
+
+    }
+    function save(id) {
+        let content = document.getElementById("content").innerText;
+        let title = document.getElementById("title").innerText;
+        document.getElementById("save").classList.add("hidden");
+        document.getElementById("edit").classList.remove("hidden");
+        document.getElementById("content").setAttribute("contenteditable", false);
+        document.getElementById("title").setAttribute("contenteditable", false);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/savenote', true);
+
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function () { // Call a function when the state changes.
+            if (this.readyState === XMLHttpRequest.DONE) {
+                if (this.status !== 200) {
+                    location.reload()
+                }
+            }
+        }
+
+        xhr.send(JSON.stringify({title, content, id}));
+    }
+</script>
+
+<!-- beginning of errr message -->
+<div class="py-5" style="width: 50%;position: fixed; top:0px; left:25%; z-index: 9999; border-radius: 0px;"
+     th:if="${errmessage}">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12 m-0 p-0">
+                        <div class="alert alert-danger text-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">×</button>
+                            <h4 class="alert-heading text-center">An Error has occured</h4>
+                            <p class="mb-0 text-center" th:text="${errmessage}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end of err message -->
+
+<div class="py-5" style="width: 50%;position: fixed; top:0px; left:25%; z-index: 9999; border-radius: 0px;"
+     th:if="${errmessage}">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12 m-0 p-0">
+                        <div class="alert alert-danger text-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">×</button>
+                            <h4 class="alert-heading text-center">An Error has occured</h4>
+                            <p class="mb-0 text-center" th:text="${errmessage}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- end of err message -->
 </body>
 
 </html>
