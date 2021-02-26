@@ -2,6 +2,7 @@ package me.calibri.webprojectspring.controllers;
 
 import me.calibri.webprojectspring.entities.Note;
 import me.calibri.webprojectspring.entities.User;
+import me.calibri.webprojectspring.models.NoteDto;
 import me.calibri.webprojectspring.models.NoteEditModel;
 import me.calibri.webprojectspring.models.NoteShareModel;
 import me.calibri.webprojectspring.models.UserDto;
@@ -105,7 +106,6 @@ public class MainController {
         UserDto userDto = LoginUtility.getUserDto(session);
         User userEntity = userService.getUserById(userDto.getId());
         model.addAttribute("notes", noteService.findNotesByOwner(userEntity));
-        model.addAttribute("sharednotes",userEntity.getSharedNotes());
         return "Notes";
     }
 
@@ -114,13 +114,16 @@ public class MainController {
         if (!LoginUtility.isLoggedIn(session)) return HOME_PAGE;
         try {
             Note note = noteService.getNoteById(id);
-            noteService.checkOwner(note, LoginUtility.getUserDto(session).getId());
-            model.addAttribute("note",note);
+            long userId = LoginUtility.getUserDto(session).getId();
+            noteService.canAccess(note, userId);
+            NoteDto noteDto = note.toDto();
+            noteDto.setUserId(userId);
+            model.addAttribute("note", noteDto);
             return "NoteView";
         } catch (RuntimeException exception) {
             model.addAttribute("errmessage", exception.getMessage());
         }
-        return "Notes";
+        return "redirect:/notes";
     }
 
     @PostMapping("/savenote")
@@ -134,7 +137,10 @@ public class MainController {
     public @ResponseBody
     ResponseEntity<String> shareNote(@RequestBody NoteShareModel model, HttpSession session){
         if (!LoginUtility.isLoggedIn(session)) return ResponseEntity.badRequest().build();
+        Note note = noteService.getNoteById(model.getNoteId());
+
         try{
+            noteService.checkOwner(note, LoginUtility.getUserDto(session).getId());
             noteService.shareNote(model);
         }
         catch(RuntimeException exception){

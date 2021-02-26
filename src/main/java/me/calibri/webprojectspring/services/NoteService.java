@@ -3,14 +3,14 @@ package me.calibri.webprojectspring.services;
 import me.calibri.webprojectspring.entities.Note;
 import me.calibri.webprojectspring.entities.Pictures;
 import me.calibri.webprojectspring.entities.User;
+import me.calibri.webprojectspring.models.NoteDto;
 import me.calibri.webprojectspring.models.NoteEditModel;
 import me.calibri.webprojectspring.models.NoteShareModel;
 import me.calibri.webprojectspring.repositories.NoteRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class NoteService {
@@ -42,15 +42,36 @@ public class NoteService {
         noteRepository.deleteById(id);
     }
 
-    public List<Note> findNotesByOwner(User owner) {
-        Optional<List<Note>> notes = noteRepository.findAllByOwner(owner);
-        return notes.orElse(null);
+    public List<NoteDto> findNotesByOwner(User owner) {
+        Optional<List<Note>> optionalNotes = noteRepository.findAllByOwner(owner);
+        List<Note> notes = optionalNotes.orElse(new ArrayList<>());
+        notes.addAll(owner.getSharedNotes());
+        
+        return notes
+                .stream()
+                .sorted(Comparator.comparing(Note::getCreateTimestamp).reversed())
+                .map(note -> {
+                    NoteDto noteDto = note.toDto();
+                    noteDto.setUserId(owner.getUserId());
+                    return noteDto;
+                })
+                .collect(Collectors.toList());
     }
 
-    public boolean checkOwner(Note note,long userId){
-        if(note.getOwner().getUserId() == userId) return true;
-        else{
+    public void checkOwner(Note note,long userId){
+        if (note.getOwner().getUserId() != userId) {
             throw new RuntimeException("You do not own access to this note!");
+        }
+    }
+
+    public void canAccess(Note note, long userId){
+        if (note.getOwner().getUserId() != userId) {
+            if(note.getUsers().stream().anyMatch(user -> user.getUserId()==userId)){
+
+            }
+            else{
+                throw new RuntimeException("You do not own access to this note!");
+            }
         }
     }
     public Note getNoteById(long id){

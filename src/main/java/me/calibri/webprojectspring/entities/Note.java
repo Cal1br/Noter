@@ -1,5 +1,7 @@
 package me.calibri.webprojectspring.entities;
 
+import me.calibri.webprojectspring.models.NoteDto;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,10 +76,6 @@ public class Note {
         this.content = content;
     }
 
-    public String getShortContent() {
-        return content.substring(0, Math.min(97, content.length())) + "...";
-    }
-
     public List<Pictures> getPictures() {
         return pictures;
     }
@@ -88,6 +86,10 @@ public class Note {
         } else {
             this.pictures = new ArrayList<Pictures>();
         }
+    }
+
+    public NoteDto toDto(){
+        return new NoteDto(this.title,this.content,this.noteId,this.owner.getUserId());
     }
 
     public String getTitle() {

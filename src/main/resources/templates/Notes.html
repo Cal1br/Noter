@@ -50,7 +50,7 @@
         <div class="row">
             <th:block th:each="note : ${notes}">
                 <div class="col-lg-4 col-md-6 p-3 border-0"
-                     th:onClick="'window.location.href=\'noteviewer\/' + ${note.getNoteId()} + '\''"
+                     th:onClick="'window.location.href=\'noteviewer\/' + ${note.id} + '\''"
                      style="cursor: pointer">
                     <div class="card">
                         <div class="card-body p-4 bg-primary text-body border border-secondary rounded-lg">

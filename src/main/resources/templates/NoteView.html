@@ -64,10 +64,10 @@
             <div class="col-md-6 d-flex flex-row justify-content-start align-items-start">
                 <button class="btn btn-outline-secondary btn-lg w-50 m-0" id="edit" onclick="edit()">Edit<br></button>
                 <button class="btn btn-lg btn-success w-50 hidden" id="save"
-                        th:note-id="${note.getNoteId()}" onclick="save(this.getAttribute('note-id'))">Save
+                        th:note-id="${note.id}" onclick="save(this.getAttribute('note-id'))">Save
                 </button>
             </div>
-            <div class="col-md-6 d-flex flex-row justify-content-end">
+            <div th:if="${!note.shared}" class="col-md-6 d-flex flex-row justify-content-end">
                 <div class="row">
                     <div class="col-md-8">
                         <div class="form-group">
@@ -75,7 +75,7 @@
                                    placeholder="Enter username" required="required" id="username">
                         </div>
                     </div>
-                    <div class=""><button th:note-id="${note.getNoteId()}" onclick="shareWithFriend(this.getAttribute('note-id'))" class="btn btn-secondary btn-lg" id="share">Share</button></div>
+                    <div class=""><button th:note-id="${note.id}" onclick="shareWithFriend(this.getAttribute('note-id'))" class="btn btn-secondary btn-lg" id="share">Share</button></div>
                 </div>
             </div>
         </div>
