@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -26,14 +26,11 @@
                 <li class="nav-item"><a class="nav-link" href="/logout">Logout<br></a></li>
             </ul>
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="#">
-                    <i class="fa fa-twitter fa-fw"></i>
-                </a></li>
-                <li class="nav-item"><a class="nav-link" href="#">
+                <li class="nav-item"><a class="nav-link" href="https://www.facebook.com/atilla.guner.75">
                     <i class="fa fa-facebook fa-fw"></i>
                 </a></li>
-                <li class="nav-item"><a class="nav-link" href="#">
-                    <i class="fa fa-slack fa-fw"></i>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/Cal1br">
+                    <i class="fa fa-github fa-fw"></i>
                 </a></li>
             </ul>
         </div>
@@ -50,7 +47,7 @@
                                placeholder="Enter your Title here" name="title"
                                required="required" maxlength="50" minlength="1">
                         <textarea name="content" id="content" cols="30" rows="10" class="w-100 h-100"
-                                  placeholder="Write your content here" required="required" minlength="1" maxlength="2000"></textarea>
+                                  placeholder="Write your content here" required="required" wrap="hard" minlength="1" maxlength="2000"></textarea>
                     </div>
                     <button type="submit" class="btn w-75 btn-success m-4">Submit</button>
                 </form>

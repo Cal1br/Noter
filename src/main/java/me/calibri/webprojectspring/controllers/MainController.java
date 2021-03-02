@@ -2,10 +2,7 @@ package me.calibri.webprojectspring.controllers;
 
 import me.calibri.webprojectspring.entities.Note;
 import me.calibri.webprojectspring.entities.User;
-import me.calibri.webprojectspring.models.NoteDto;
-import me.calibri.webprojectspring.models.NoteEditModel;
-import me.calibri.webprojectspring.models.NoteShareModel;
-import me.calibri.webprojectspring.models.UserDto;
+import me.calibri.webprojectspring.models.*;
 import me.calibri.webprojectspring.services.NoteService;
 import me.calibri.webprojectspring.services.UserService;
 import me.calibri.webprojectspring.utils.LoginUtility;
@@ -17,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
-//TODO NoteView and edit
-//TODO View Notes and make them clickable, и от там може да има един бутон edit, който да прави contendeditable true там както беше logout в началото
+
 @Controller
 @RequestMapping
 public class MainController {
@@ -91,7 +87,7 @@ public class MainController {
     public String postNote(HttpSession session, @RequestParam String title, @RequestParam String content,Model model) { //TODO Tuka sushto kartinkite
         try {
             User owner = userService.getUserById(LoginUtility.getUserDto(session).getId());
-            noteService.createNote(owner, title, content, new ArrayList<>()); //TODO Dobavi Kartinkite.....
+            noteService.createNote(owner, title, content); //TODO Dobavi Kartinkite.....
             return "redirect:/notes";
         } catch (RuntimeException exception) {
             model.addAttribute("errmessage", exception.getMessage());
@@ -135,7 +131,7 @@ public class MainController {
     }
     @PostMapping("/sharenote")
     public @ResponseBody
-    ResponseEntity<String> shareNote(@RequestBody NoteShareModel model, HttpSession session){
+    ResponseEntity<String> shareNote(@RequestBody NoteShareModel model, HttpSession session, Model page){
         if (!LoginUtility.isLoggedIn(session)) return ResponseEntity.badRequest().build();
         Note note = noteService.getNoteById(model.getNoteId());
 
@@ -154,26 +150,19 @@ public class MainController {
         LoginUtility.logOut(session);
         return HOME_PAGE;
     }
-
-    /*@GetMapping
-    public String landing(Model model) {
-        model.addAttribute("name", "calibri");
-        model.addAttribute("pass", "Devin900");
-        return "Login";
+    @PostMapping("/deletenote")
+    public @ResponseBody
+    ResponseEntity<String> deleteNote(long id,HttpSession session){
+        if (!LoginUtility.isLoggedIn(session)) return ResponseEntity.badRequest().build();
+        Note note = noteService.getNoteById(id);
+        try{
+            noteService.checkOwner(note,LoginUtility.getUserDto(session).getId());
+            noteService.deleteNoteById(id);
+        }
+        catch (RuntimeException exception){
+            return ResponseEntity.status(500).body(exception.getMessage());
+        }
+        return ResponseEntity.ok().build();
     }
-
-    @GetMapping("home")
-    public String home(Model model, HttpSession session) {
-        Integer count = (Integer) session.getAttribute("count");
-
-        if (count == null) {
-            count = 0;
-        }
-        session.setAttribute("count", ++count);
-        if (count == 10) {
-            session.invalidate();
-        }
-        model.addAttribute("name", "calibri " + count + " " + session.getId());
-        return "Home";
-    }*/
 }
+//TODO DELETE FUNCTION

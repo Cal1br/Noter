@@ -23,16 +23,19 @@ public class Note {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
     @ManyToMany()
+    @JoinTable(name = "shared_note_user",
+            joinColumns = {@JoinColumn(name = "note_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
     private List<User> users;
-    @OneToMany(mappedBy = "note")
-    private List<Pictures> pictures;
 
 
     public Note() {
 
     }
+
     @PrePersist
-    public void prePersist(){
+    public void prePersist() {
         this.createTimestamp = new Date();
     }
 
@@ -73,24 +76,13 @@ public class Note {
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.content = content.replace("\\n", "<br>");
     }
 
-    public List<Pictures> getPictures() {
-        return pictures;
+    public NoteDto toDto() {
+        return new NoteDto(this.title, this.content, this.noteId, this.owner.getUserId());
     }
 
-    public void setPictures(List<Pictures> pictures) {
-        if (pictures != null) {
-            this.pictures = pictures;
-        } else {
-            this.pictures = new ArrayList<Pictures>();
-        }
-    }
-
-    public NoteDto toDto(){
-        return new NoteDto(this.title,this.content,this.noteId,this.owner.getUserId());
-    }
 
     public String getTitle() {
         return title;

@@ -1,7 +1,6 @@
 package me.calibri.webprojectspring.services;
 
 import me.calibri.webprojectspring.entities.Note;
-import me.calibri.webprojectspring.entities.Pictures;
 import me.calibri.webprojectspring.entities.User;
 import me.calibri.webprojectspring.models.NoteDto;
 import me.calibri.webprojectspring.models.NoteEditModel;
@@ -22,12 +21,11 @@ public class NoteService {
         this.userService = userService;
     }
 
-    public Note createNote(User owner, String title, String content, List<Pictures> pictures) {
+    public Note createNote(User owner, String title, String content) {
         Note note = new Note();
         note.setOwner(owner);
         note.setTitle(title);
         note.setContent(content);
-        note.setPictures(pictures); //NULL проблемът е решен в set метода
         note.setUsers(new ArrayList<>());
         return noteRepository.save(note);
     }
@@ -90,6 +88,5 @@ public class NoteService {
         note.getUsers().add(user);
         noteRepository.save(note);
     }
-
 
 }
