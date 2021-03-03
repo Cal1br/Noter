@@ -29,7 +29,6 @@ public class MainController {
         this.noteService = noteService;
     }
 
-
     @GetMapping("/")
     public String landing(final HttpSession session) {
         if (LoginUtility.isLoggedIn(session)) {
@@ -37,6 +36,7 @@ public class MainController {
         }
         return "Login";
     }
+
 
     @PostMapping("/")
     public String login(HttpSession session, Model model, @RequestParam String username, @RequestParam String password) {
@@ -84,10 +84,10 @@ public class MainController {
     }
 
     @PostMapping("noteCreator")
-    public String postNote(HttpSession session, @RequestParam String title, @RequestParam String content,Model model) { //TODO Tuka sushto kartinkite
+    public String postNote(HttpSession session, @RequestParam String title, @RequestParam String content,Model model) {
         try {
             User owner = userService.getUserById(LoginUtility.getUserDto(session).getId());
-            noteService.createNote(owner, title, content); //TODO Dobavi Kartinkite.....
+            noteService.createNote(owner, title, content);
             return "redirect:/notes";
         } catch (RuntimeException exception) {
             model.addAttribute("errmessage", exception.getMessage());
@@ -164,5 +164,9 @@ public class MainController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/about")
+    public String about(){
+        return "About";
+    }
 }
-//TODO DELETE FUNCTION
