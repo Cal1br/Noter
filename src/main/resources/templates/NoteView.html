@@ -64,7 +64,6 @@
                 color: white; width:100%; height:500px; resize:none" th:text="${note.content}">
                     Content of Note
                 </textarea>
-                <!--<p id="content" class="lead" th:text="${note.content}">Content of Note</p>-->
             </div>
         </div>
     </div>
@@ -183,7 +182,7 @@
 
         xhr.setRequestHeader("Content-Type", "application/json");
 
-        xhr.onreadystatechange = function () { // Call a function when the state changes.
+        xhr.onreadystatechange = function () {
             if (this.readyState === XMLHttpRequest.DONE) {
                 if (this.status !== 200) {
                     location.reload()
